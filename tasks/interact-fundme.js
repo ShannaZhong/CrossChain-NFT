@@ -1,26 +1,8 @@
-// import ethers.js
-// create main function
-// execute main function
+const { task } = require("hardhat/config");
 
-const { ethers } = require("hardhat")
-
-async function main() {
-  // create factory
+task("interact-fundme", "interact with fundme contract").addParam("addr", "fundme contract address").setAction(async (taskArgs, hre) => {
   const fundMeFactory = await ethers.getContractFactory("FundMe");
-  console.log("contract deploying")
-  // deploy contract from factory
-  const fundMe = await fundMeFactory.deploy(500);
-  await fundMe.waitForDeployment();
-  console.log(`contract has been deployed successfully, contract address is ${fundMe.target}`);
-
-  // verify fundme
-  if(hre.network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {
-    console.log("wait for 5 confirmations");
-    await fundMe.deploymentTransaction().wait(5);
-    await verifyFundMe(fundMe.target, [500]);
-  } else {
-    console.log("verification skipped");
-  }
+  const fundMe = fundMeFactory.attach(taskArgs.addr);
 
   // init 2 accounts
   const [firstAccount, secondAccount] = await ethers.getSigners();
@@ -34,7 +16,7 @@ async function main() {
   console.log(`balance of contractc is ${balanceOfContract}`);
 
   // check contract with second account
-  const fundTxWithSecondAccount = await fundMe.connect(secondAccount).fund({ value: ethers.parseEther("0.004")});
+  const fundTxWithSecondAccount = await fundMe.connect(secondAccount).fund({ value: ethers.parseEther("0.005")});
   await fundTxWithSecondAccount.wait();
 
   // check balance of contract
@@ -46,16 +28,7 @@ async function main() {
   const secondAccountBalanceInFundMe = await fundMe.fundersToAmount(secondAccount.address);
   console.log(`Balance of first account ${firstAccount.address} in fundMe is ${firstAccountBalanceInFundMe}`);
   console.log(`Balance of second account ${secondAccount.address} in fundMe is ${secondAccountBalanceInFundMe}`);
-}
 
-async function verifyFundMe(fundMeAddr, args) {
-  await hre.run("verify:verify", {
-    address: fundMeAddr,
-    constructorArguments: args,
-  });
-}
+})
 
-main().then().catch((err) => {
-  console.error(err);
-  process.exit(0);
-});
+module.exports = {}
