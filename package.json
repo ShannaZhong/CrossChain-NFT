@@ -19,6 +19,7 @@
     "hardhat": "^2.24.0",
     "hardhat-deploy": "^1.0.2",
     "hardhat-deploy-ethers": "^0.4.2",
+    "hardhat-gas-reporter": "^2.2.3",
     "undici": "^7.9.0"
   }
 }
