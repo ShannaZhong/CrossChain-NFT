@@ -2,6 +2,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require("@nomicfoundation/hardhat-verify");
 require("@chainlink/env-enc").config();
 require("./tasks");
+require("hardhat-deploy");
 
 
 // 解决验证Etherscan网络超时问题
@@ -28,5 +29,13 @@ module.exports = {
     apiKey: {
       sepolia: ETHERSCAN_API_KEY
     }
+  },
+  namedAccounts: {
+    firstAccount: {
+      default: 0
+    },
+    secondAccount: {
+      default: 1
+    },
   }
 };
