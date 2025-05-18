@@ -17,12 +17,15 @@ module.exports = async({getNamedAccounts, deployments}) => {
   const firstAccount = (await getNamedAccounts()).firstAccount;
   const { deploy } = deployments;
 
-  let dataFeedAddr
+  let dataFeedAddr;
+  let confirmations;
   if(developmentChains.includes(network.name)) {
     const MockV3Aggregator = await deployments.get("MockV3Aggregator");
     dataFeedAddr = MockV3Aggregator.address;
+    confirmations = 0;
   } else {
     dataFeedAddr = networkConfig[network.config.chainId].ethUsdPriceFeed;
+    confirmations = CONFIRMATION;
   }
   // remove deployments directory or add --reset flag if you redeploy contract
 
@@ -30,7 +33,7 @@ module.exports = async({getNamedAccounts, deployments}) => {
     from: firstAccount,
     args: [LOCK_TIME, dataFeedAddr],
     log: true,
-    waitConfirmations: CONFIRMATION, // 等待5个区块确认
+    waitConfirmations: confirmations, // 等待x个区块确认
   })
 
   if(hre.network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {

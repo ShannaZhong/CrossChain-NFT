@@ -3,6 +3,9 @@ require("@nomicfoundation/hardhat-verify");
 require("@chainlink/env-enc").config();
 require("./tasks");
 require("hardhat-deploy");
+require("@nomicfoundation/hardhat-ethers");
+require("hardhat-deploy");
+require("hardhat-deploy-ethers");
 
 
 // 解决验证Etherscan网络超时问题
